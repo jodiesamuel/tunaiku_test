@@ -118,3 +118,58 @@ pandas_gbq.to_gbq(output_details,project_id="zz",destination_table="xx",
                               ]
                  )
 ```
+## Questions:
+
+- extract a .tz file containing multiple txt files and each txt file has 6 different table data(identified based on table_id) and load these in a destination table
+
+extract tar zip file with multiple csv files and load into localhost postgres table 
+```
+import  tarfile
+tar = tarfile.open("/home/jodie/Documents/tunaiku/test.tar.xz")
+
+li=[]
+for member in tar.getmembers():
+    f=tar.extractfile(member)
+    content = pd.read_csv(f, sep=',')
+    li.append(content)
+    
+frame = pd.concat(li, axis=0, ignore_index=True)
+```
+![alt text](https://github.com/jodiesamuel/tunaiku_test/blob/main/pictures/Screenshot%20from%202020-11-17%2016-14-53.png)
+```
+from sqlalchemy import create_engine
+connect = "postgresql+psycopg2://admin:admin@localhost:5432/postgres"
+def to_alchemy(df):
+    engine = create_engine(connect)
+    frame.to_sql(
+        'tunaiku_test', 
+        con=engine, 
+        index=False, 
+        if_exists='replace'
+    )
+```
+## Questions:
+
+- share a simple python code that use parallel threading for a class/pkg, example: run 2 methods in a python class in parallel
+
+running parallel threads using the files from the question before
+```
+import threading
+
+def testForThread1():
+    print('[Thread1]: ')
+    test1 = pd.read_csv('/home/jodie/Documents/tunaiku/test.csv', sep=',')
+    print(test1)
+
+def testForThread2():
+    print('[Thread2]: ')
+    test2 = pd.read_csv('/home/jodie/Documents/tunaiku/test2.csv', sep=',')
+    print(test2)
+
+if __name__ == "__main__":
+    t1 = threading.Thread(name="Test1", target=testForThread1) 
+    t1.start()
+    t2 = threading.Thread(name="Test2", target=testForThread2) 
+    t2.start()
+```
+![alt text](https://github.com/jodiesamuel/tunaiku_test/blob/main/pictures/Screenshot%20from%202020-11-17%2016-18-13.png)
